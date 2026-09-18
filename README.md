@@ -11,6 +11,17 @@
 
 </div>
 
+> This repository is maintained as an upstream-tracking reference fork of OmniRoute.
+>
+> **Upstream:** [diegosouzapw/OmniRoute](@url:`https://github.com/diegosouzapw/OmniRoute`)
+>
+> The fork follows upstream development for evaluation and selective integration.
+> Synchronization is not automatic; upstream changes are reviewed before being
+> incorporated.
+>
+> This fork does not maintain an independent release lifecycle. Release alignment
+> with upstream is preferred.
+
 <div align="center">
 
 ## 💰 ~1.51B Free Tokens / Month
