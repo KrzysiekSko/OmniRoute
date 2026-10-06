@@ -1170,7 +1170,7 @@ export default function ApiManagerPageClient() {
                           onClick={() => handleCopyExistingKey(key.id)}
                           className="p-1 text-text-muted/60 hover:text-primary transition-colors shrink-0"
                           title={tc("copy")}
-                          aria-label={tc("copy")}
+                          aria-label={key.name ? `Copy API key for ${key.name}` : "Copy API key"}
                         >
                           <span className="material-symbols-outlined text-[14px]">
                             {copied === `existing_key_${key.id}` ? "check" : "content_copy"}
@@ -1653,7 +1653,7 @@ export default function ApiManagerPageClient() {
           <div className="flex gap-2">
             <Input value={createdKey || ""} readOnly className="flex-1 font-mono text-sm" />
             <Button
-              variant="secondary"
+              variant="secondary" aria-label="Copy generated API key"
               icon={copied === "created_key" ? "check" : "content_copy"}
               onClick={() => copy(createdKey, "created_key")}
             >

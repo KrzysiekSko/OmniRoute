@@ -1322,6 +1322,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                   </code>
                   <button
                     onClick={() => void copy(url, key)}
+                    aria-label="Copy endpoint URL"
                     className="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded border border-border/70 text-text-muted hover:text-text transition-colors"
                   >
                     <span className="material-symbols-outlined text-[12px]">
@@ -1368,6 +1369,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
             </span>
             <button
               onClick={() => void copy(localApiUrl, "endpoint_url")}
+            aria-label="Copy local API URL"
               className="shrink-0 flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-md border border-border/70 text-text-muted hover:text-text hover:border-border transition-colors"
             >
               <span className="material-symbols-outlined text-[14px]">
@@ -1472,7 +1474,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                       );
                     }}
                     className={`shrink-0 ${cloudflaredStatus?.running ? "border-border/70! text-text-muted! hover:text-text!" : ""}`}
-                  >
+                   aria-label="Copy Tailscale IP URL" aria-label="Copy Tailscale IP URL" aria-label="Copy Tailscale IP URL">
                     {cloudflaredActionLabel}
                   </Button>
                 )}
@@ -1549,7 +1551,8 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                           {tailscaleIpUrl.replace(/^https?:\/\//, "")}
                         </code>
                         <span className="material-symbols-outlined text-[10px] opacity-60">
-                          {copied === "tailscale_ip_inline" ? "check" : "content_copy"}
+                          
+                      {copied === "tailscale_ip_inline" ? "check" : "content_copy"}}
                         </span>
                       </button>
                     )}
@@ -2382,6 +2385,7 @@ function ProviderModelsModal({
                   onClick={() => copy(m.id, copyKey)}
                   className="p-1 hover:bg-sidebar rounded text-text-muted hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
                   title={tc("copy")}
+                aria-label="Copy model ID"
                 >
                   <span className="material-symbols-outlined text-sm">
                     {copied === copyKey ? "check" : "content_copy"}
@@ -2479,6 +2483,7 @@ function EndpointCard({
           onClick={() => void copy(fullUrl, copyId)}
           className="shrink-0 flex items-center justify-center size-6 rounded hover:bg-sidebar transition-colors"
           title={t("copyUrl")}
+        aria-label="Copy endpoint URL"
         >
           <span className="material-symbols-outlined text-[12px] text-text-muted">
             {copied === copyId ? "check" : "content_copy"}
