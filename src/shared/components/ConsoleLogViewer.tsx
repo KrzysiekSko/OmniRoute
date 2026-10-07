@@ -54,6 +54,7 @@ export default function ConsoleLogViewer() {
   const [error, setError] = useState<string | null>(null);
   const [levelFilter, setLevelFilter] = useState("all");
   const [searchText, setSearchText] = useState("");
+  const [timeRange, setTimeRange] = useState<"5m" | "15m" | "1h" | "24h" | "all">("all");
   const [autoScroll, setAutoScroll] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
@@ -154,13 +155,31 @@ export default function ConsoleLogViewer() {
   const getComponent = (entry: LogEntry) => stringifyValue(entry.component || entry.module || "");
   const getCorrelationId = (entry: LogEntry) => stringifyValue(entry.correlationId);
 
+  // Apply time-range filter
+  const timeFilteredLogs =
+    timeRange === "all"
+      ? logs
+      : logs.filter((entry) => {
+          const msMap = {
+            "5m": 5 * 60 * 1000,
+            "15m": 15 * 60 * 1000,
+            "1h": 60 * 60 * 1000,
+            "24h": 24 * 60 * 60 * 1000,
+          };
+          try {
+            return Date.now() - new Date(entry.timestamp).getTime() <= msMap[timeRange];
+          } catch {
+            return true; // Include logs with invalid timestamps
+          }
+        });
+
   // Apply text search filter
   const filteredLogs = searchText
-    ? logs.filter((entry) => {
+    ? timeFilteredLogs.filter((entry) => {
         const full = JSON.stringify(entry).toLowerCase();
         return full.includes(searchText.toLowerCase());
       })
-    : logs;
+    : timeFilteredLogs;
 
   return (
     <div className="flex flex-col gap-4">
@@ -178,6 +197,20 @@ export default function ConsoleLogViewer() {
           <option value="info">Info+</option>
           <option value="warn">Warn+</option>
           <option value="error">Error+</option>
+        </select>
+
+        {/* Time-range filter */}
+        <select
+          value={timeRange}
+          onChange={(e) => setTimeRange(e.target.value as typeof timeRange)}
+          aria-label={tv("filterByTimeRange")}
+          className="px-3 py-2 rounded-lg text-sm bg-[var(--color-bg)] border border-[var(--color-border)] text-[var(--color-text-main)] focus:outline-2 focus:outline-[var(--color-accent)]"
+        >
+          <option value="all">{tv("allTime")}</option>
+          <option value="5m">{tv("last5Minutes")}</option>
+          <option value="15m">{tv("last15Minutes")}</option>
+          <option value="1h">{tv("last1Hour")}</option>
+          <option value="24h">{tv("last24Hours")}</option>
         </select>
 
         {/* Search */}
