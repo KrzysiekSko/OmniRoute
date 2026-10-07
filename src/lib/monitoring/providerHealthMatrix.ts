@@ -325,6 +325,11 @@ function classifyAccount(
 ): ProviderHealthState {
   if (connection) {
     if (!isActiveConnection(connection.isActive) || isTerminalConnection(connection)) return "down";
+
+    // Check if token has expired
+    const tokenExpiresAt = parseTimeMs(connection.tokenExpiresAt);
+    if (tokenExpiresAt && tokenExpiresAt <= now) return "down";
+
     const cooldownUntil = parseTimeMs(connection.rateLimitedUntil);
     if (cooldownUntil && cooldownUntil > now) return "degraded";
   }
