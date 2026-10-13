@@ -18,8 +18,22 @@ test("#10990 v0-vercel-web resolves a non-empty static local catalog", () => {
   const models = getStaticModelsForProvider("v0-vercel-web");
   assert.ok(models && models.length > 0, "v0-vercel-web should expose a static catalog");
   const ids = models.map((m) => m.id);
-  assert.ok(
-    ids.includes("v0-1.5-lg"),
-    `expected v0-1.5-lg in [${ids.join(", ")}]`
+
+  // Assert 1: No duplicate model IDs
+  assert.equal(
+    new Set(ids).size,
+    ids.length,
+    `duplicate model IDs found: ${ids.filter((id, i, a) => a.indexOf(id) !== i).join(", ")}`
   );
+
+  // Assert 2: Only v0.dev domain models (v0- prefix)
+  for (const id of ids) {
+    assert.match(id, /^v0-/, `expected v0-domain model id, got: ${id}`);
+  }
+
+  // Assert 3: Exact declared model count (status quo: 3)
+  assert.equal(ids.length, 3, `expected exactly 3 models, got ${ids.length}: [${ids.join(", ")}]`);
+
+  // Legacy assertion retained for traceability
+  assert.ok(ids.includes("v0-1.5-lg"), `expected v0-1.5-lg in [${ids.join(", ")}]`);
 });

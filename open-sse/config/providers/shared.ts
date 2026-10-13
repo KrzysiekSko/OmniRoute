@@ -347,6 +347,10 @@ export const CHAT_OPENAI_COMPAT_MODELS: Record<string, RegistryModel[]> = {
     "google/gemini-2.5-pro",
     "moonshotai/kimi-k2",
     "vercel/v0-1.5-md",
+    "poolside/laguna-s-2.1-free",
+    "inclusionai/ling-3.1-flash-free",
+    "convaiinnovations/laya-free",
+    "tako-search",
   ]),
   "lambda-ai": buildModels([
     "deepseek-r1-671b",
