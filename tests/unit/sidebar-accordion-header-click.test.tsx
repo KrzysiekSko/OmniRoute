@@ -1,11 +1,10 @@
 // @vitest-environment jsdom
-// Regression for UX-1: sidebar accordion header must expand on mouse click.
-// The header was a <div role="button"> with an onClick but no tabIndex/key
-// handling, so clicks produced no visible delta while Enter worked — the
-// accordion was only operable via keyboard. The fix replaced it with a native
-// <button>. This test pins the click path AND guards the keyboard path from
-// regressing, plus the pin button isolation (clicking pin must NOT toggle the
-// section — it is a sibling button with its own stopPropagation).
+// Regression for UX-1: the accordion section header is a native <button>, so
+// it stays in the tab order and activates from the keyboard (Enter/Space)
+// without a role="button" + tabIndex/onKeyDown shim. Mouse click already
+// toggled the section; this guards focusability and keyboard activation, the
+// symmetric toggle, and pin-button isolation (the pin control is a sibling
+// <button> without aria-expanded and must NOT toggle the section).
 import React from "react";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -52,9 +51,7 @@ function collapsedHeader(): HTMLButtonElement {
   // OmniProxy is pinned-by-default (starts expanded); the other sections start
   // collapsed. Target a collapsed header so the click-to-expand assertion is
   // meaningful rather than a no-op toggle of an already-expanded section.
-  const collapsed = container.querySelector<HTMLButtonElement>(
-    'button[aria-expanded="false"]'
-  );
+  const collapsed = container.querySelector<HTMLButtonElement>('button[aria-expanded="false"]');
   if (!collapsed) throw new Error("no collapsed accordion header found");
   return collapsed;
 }
@@ -65,7 +62,7 @@ async function click(el: HTMLElement) {
   });
 }
 
-describe("Sidebar accordion header click (UX-1)", () => {
+describe("Sidebar accordion header keyboard and focus (UX-1)", () => {
   it("expands the section on a real mouse click", async () => {
     await renderSidebar();
     const header = collapsedHeader();
@@ -76,12 +73,12 @@ describe("Sidebar accordion header click (UX-1)", () => {
     expect(header.getAttribute("aria-expanded")).toBe("true");
   });
 
-  it("still expands via keyboard activation (Enter path must not regress)", async () => {
+  it("expands via keyboard focus and activation", async () => {
     await renderSidebar();
     const header = collapsedHeader();
 
-    // A native <button> is focusable and Enter dispatches a click — the exact
-    // path the ticket reported as the ONLY working one before the fix.
+    // A native <button> is in the tab order. Focus it, then activate — Enter
+    // and Space synthesize a click on the focused button.
     header.focus();
     expect(document.activeElement).toBe(header);
     await click(header);
